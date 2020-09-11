@@ -14,19 +14,12 @@ import (
 
 func Run() {
 	mux := http.NewServeMux()
-
 	mux.Handle("/", http.RedirectHandler("/static/room.html", 302))
-
 	mux.HandleFunc("/static/", safeHandler(staticHandler))
 	mux.Handle("/ws", websocket.Handler(webSocketHandler))
 	mux.HandleFunc("/getAllRooms", safeHandler(getAllRooms))
 	mux.HandleFunc("/getRoomInfo", safeHandler(getRoomInfo))
-
-	//http.HandleFunc("/static/", safeHandler(staticHandler))
-	//http.Handle("/ws", websocket.Handler(webSocketHandler))
-	//http.HandleFunc("/getAllRooms", safeHandler(getAllRooms))
-	//http.HandleFunc("/getRoomInfo", safeHandler(getRoomInfo))
-	err := http.ListenAndServe("", mux)
+	err := http.ListenAndServe(":8888", mux)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err.Error())
 	}
@@ -44,10 +37,6 @@ func safeHandler(fn http.HandlerFunc) http.HandlerFunc {
 		}()
 		fn(w, r)
 	}
-}
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {

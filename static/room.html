@@ -91,10 +91,15 @@
 			}
 			ws.onmessage = function (result) {
 				var msg = JSON.parse(result.data);
-				showMsg("divShow", tl.paperDiv("【" + msg.userName + "】：" + msg.content), true);
-				var userDataShow = [];
-				userDataShow.push('<div class="btn btn-default">' + msg.userName + '</div>');
-				showMsg("divUsers", userDataShow.join(''), false);
+				console.log("receive msg",msg)
+				// "register":注册成功，"send":发送，"online":上线，"offline"：下线，"modifyUser"：修改信息
+				if(msg.type === "send"){
+					showMsg("divShow", tl.paperDiv("【" + msg.userName + "】：" + msg.content), true);
+					var userDataShow = [];
+					userDataShow.push('<div class="btn btn-default">' + msg.userName + '</div>');
+					showMsg("divUsers", userDataShow.join(''), false);
+				}
+
 			}
 			ws.onerror = function () {
 				if(ws) {
@@ -120,6 +125,7 @@
 				return;
 			}
 			var request = tl.formart('{"userName": "{0}", "type": "{1}", "content": "{2}" }', [tUserName, "send", tContent]);
+			console.log("send msg：", request);
 			ws.send(request);
 			tContentObj.val("");
 			tContentObj.val($.trim(tContentObj.val()).replace("/[\n]/g", ""));
